@@ -4,9 +4,16 @@ import pandas as pd
 
 
 def load_data(messages_filepath, categories_filepath):
+    # load messages dataset
     messages = pd.read_csv(messages_filepath, dtype='str')
+    # load categories dataset
     categories = pd.read_csv(categories_filepath, dtype='str')
+    # merge datasets
+    df = pd.merge(messages, categories, on=['id'])
+    # create a dataframe of the 36 individual category columns
+    categories = categories['categories'].str.split(';', expand=True)
 
+    
 
 def clean_data(df):
     pass
