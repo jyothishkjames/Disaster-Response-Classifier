@@ -13,6 +13,13 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(messages_df, categories_df):
+    # drop the column 'original'
+    messages_df.drop(columns=['original'], axis=1, inplace=True)
+
+    # drop duplicates
+    messages_df.drop_duplicates(keep='first', inplace=True)
+    categories_df.drop_duplicates(keep='first', inplace=True)
+
     # merge datasets
     df = pd.merge(messages_df, categories_df, on=['id'])
 
@@ -41,8 +48,8 @@ def clean_data(messages_df, categories_df):
     # drop the original categories column from `df`
     df.drop(columns=['categories'], inplace=True)
 
-    # drop duplicates
-    df.drop_duplicates(keep='first', inplace=True)
+    # concatenate the original dataframe with the new `categories` dataframe
+    df = pd.concat([df, categories_df], axis=1)
 
     return df
 
