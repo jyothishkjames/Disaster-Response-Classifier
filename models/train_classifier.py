@@ -1,4 +1,5 @@
 # import libraries
+import sys
 import pandas as pd
 from sqlalchemy import create_engine
 import nltk
@@ -17,7 +18,6 @@ import re
 def load_data(database_filepath):
     # load data from database
     engine = create_engine('sqlite:///InsertDatabaseName.db')
-
     df = pd.read_sql_table(table_name='InsertTableName', con=engine)
     X = df.message.values
     Y = df.drop(columns=['id', 'message', 'genre'], axis=1).values
@@ -26,13 +26,10 @@ def load_data(database_filepath):
 def tokenize(text):
     # Normalize text
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
-
     # Tokenize text data
     words = word_tokenize(text)
-
     # Remove stop words
     words = [w for w in words if words not in stopwords.words("english")]
-
     return words
 
 
