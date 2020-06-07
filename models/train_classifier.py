@@ -1,6 +1,17 @@
-import sys
+# import libraries
 import pandas as pd
 from sqlalchemy import create_engine
+import nltk
+nltk.download(['punkt', 'stopwords'])
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+import re
 
 
 def load_data(database_filepath):
@@ -8,16 +19,29 @@ def load_data(database_filepath):
     engine = create_engine('sqlite:///InsertDatabaseName.db')
 
     df = pd.read_sql_table(table_name='InsertTableName', con=engine)
-    X = df[['message']]
-    Y = df.drop(columns=['id', 'message', 'original', 'genre'], axis=1)
+    X = df.message.values
+    Y = df.drop(columns=['id', 'message', 'genre'], axis=1).values
 
 
 def tokenize(text):
-    pass
+    # Normalize text
+    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
+
+    # Tokenize text data
+    words = word_tokenize(text)
+
+    # Remove stop words
+    words = [w for w in words if words not in stopwords.words("english")]
+
+    return words
 
 
 def build_model():
-    pass
+    pipeline = Pipeline([
+        ('vect', CountVectorizer(tokenizer=tokenize)),
+        ('tfidf', TfidfTransformer()),
+        ('clf', MultiOutputClassifier(RandomForestClassifier()))
+    ])
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
