@@ -40,6 +40,12 @@ def build_model():
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
 
+    X_train, X_test, y_train, y_test = train_test_split(X, Y)
+    # train classifier
+    pipeline.fit(X_train, y_train)
+    # predict on test data
+    y_pred = pipeline.predict(X_test)
+
 
 def evaluate_model(model, X_test, Y_test, category_names):
     pass
