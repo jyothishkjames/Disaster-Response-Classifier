@@ -21,34 +21,36 @@ def load_data(database_filepath):
     df = pd.read_sql_table(table_name='InsertTableName', con=engine)
     X = df.message.values
     Y = df.drop(columns=['id', 'message', 'genre'], axis=1).values
+    category_names = df.drop(columns=['id', 'message', 'genre'], axis=1).columns.values
+    return X, Y, category_names
 
 
 def tokenize(text):
-    # Normalize text
+    # normalize text
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
-    # Tokenize text data
+    # tokenize text data
     words = word_tokenize(text)
-    # Remove stop words
+    # remove stop words
     words = [w for w in words if words not in stopwords.words("english")]
     return words
 
 
 def build_model():
+    # build machine learning pipeline
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
-
-    X_train, X_test, y_train, y_test = train_test_split(X, Y)
-    # train classifier
-    pipeline.fit(X_train, y_train)
-    # predict on test data
-    y_pred = pipeline.predict(X_test)
+    return pipeline
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+    # predict on test data
+    Y_pred = model.predict(X_test)
+    # Iterating through each column
+    for col1, col2 in zip(Y_pred, Y_test):
+        print(classification_report(col1, col2))
 
 
 def save_model(model, model_filepath):
