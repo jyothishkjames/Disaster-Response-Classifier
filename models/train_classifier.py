@@ -1,6 +1,7 @@
 # import libraries
 import sys
 import pandas as pd
+from sklearn.svm import SVC
 from sqlalchemy import create_engine
 import nltk
 nltk.download(['punkt', 'stopwords'])
@@ -8,7 +9,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -42,7 +43,13 @@ def build_model():
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
-    return pipeline
+
+    parameters = {
+        'clf__estimator': (RandomForestClassifier(), SVC())
+    }
+
+    cv = GridSearchCV(pipeline, param_grid=parameters)
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
