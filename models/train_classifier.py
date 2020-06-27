@@ -45,7 +45,7 @@ def build_model():
     ])
 
     parameters = {
-        'clf__estimator': (RandomForestClassifier(), SVC())
+        'clf': [RandomForestClassifier(), SVC()]
     }
 
     cv = GridSearchCV(pipeline, param_grid=parameters)
