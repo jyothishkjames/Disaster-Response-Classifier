@@ -45,7 +45,9 @@ def build_model():
     ])
 
     parameters = {
-        'clf': [RandomForestClassifier(), SVC()]
+        'clf__estimator__n_estimators': [10]
+        # 'clf__estimator__max_depth':[8],
+        # 'clf__estimator__random_state':[42]
     }
 
     cv = GridSearchCV(pipeline, param_grid=parameters)
