@@ -77,20 +77,20 @@ def build_model():
 
     parameters = {
         'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
-        'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
-        'features__text_pipeline__vect__max_features': (None, 5000, 10000),
+        # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
+        # 'features__text_pipeline__vect__max_features': (None, 5000, 10000),
         'features__text_pipeline__tfidf__use_idf': (True, False),
-        'clf__estimator__n_estimators': [10],
-        'clf__estimator__max_depth': [8],
-        'clf__estimator__random_state': [42],
-        'clf__estimator__class_weight': ['balanced'],
-        'clf__estimator__max_features': ['auto'],
-        'clf__estimator__min_samples_split': [2, 3, 4],
-        'features__transformer_weights': (
-            {'text_pipeline': 1, 'starting_verb': 0.5},
-            {'text_pipeline': 0.5, 'starting_verb': 1},
-            {'text_pipeline': 0.8, 'starting_verb': 1},
-        )
+        'clf__estimator__n_estimators': [1]
+        # 'clf__estimator__max_depth':[8],
+        # 'clf__estimator__random_state':[42],
+        # 'clf__estimator__class_weight': ['balanced'],
+        # 'clf__estimator__max_features': ['auto'],
+        # 'clf__estimator__min_samples_split': [2, 3, 4],
+        # 'features__transformer_weights': (
+        #   {'text_pipeline': 1, 'starting_verb': 0.5},
+        #   {'text_pipeline': 0.5, 'starting_verb': 1},
+        #   {'text_pipeline': 0.8, 'starting_verb': 1},
+        # )
     }
 
     cv = GridSearchCV(pipeline, param_grid=parameters)
