@@ -55,6 +55,7 @@ def clean_data(messages_df, categories_df):
 
 
 def save_data(df, database_filepath):
+    df.head()
     engine = create_engine('sqlite:///Disaster_Response.db')
     df.to_sql('Disaster_Response_Table', engine, index=False)
 
