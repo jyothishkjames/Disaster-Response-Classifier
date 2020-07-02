@@ -41,8 +41,8 @@ class StartingVerbExtractor(BaseEstimator, TransformerMixin):
 
 def load_data(database_filepath):
     # load data from database
-    engine = create_engine('sqlite:///InsertDatabaseName.db')
-    df = pd.read_sql_table(table_name='InsertTableName', con=engine)
+    engine = create_engine('sqlite://' + database_filepath)
+    df = pd.read_sql_table(table_name='Disaster_Response_Table', con=engine)
     X = df.message.values
     Y = df.drop(columns=['id', 'message', 'genre'], axis=1).values
     category_names = df.drop(columns=['id', 'message', 'genre'], axis=1).columns.values
