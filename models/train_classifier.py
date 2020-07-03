@@ -1,12 +1,13 @@
 # import libraries
+import pickle
 import sys
+
 import pandas as pd
-from sklearn.base import BaseEstimator, TransformerMixin
 from sqlalchemy import create_engine
 import nltk
-import re
 
-nltk.download(['punkt', 'stopwords'])
+nltk.download(['punkt', 'stopwords', 'averaged_perceptron_tagger'])
+
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from sklearn.pipeline import Pipeline, FeatureUnion
@@ -15,6 +16,8 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.base import BaseEstimator, TransformerMixin
+import re
 
 
 class StartingVerbExtractor(BaseEstimator, TransformerMixin):
@@ -41,7 +44,8 @@ class StartingVerbExtractor(BaseEstimator, TransformerMixin):
 
 def load_data(database_filepath):
     # load data from database
-    engine = create_engine('sqlite://' + database_filepath)
+    print(database_filepath)
+    engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table(table_name='Disaster_Response_Table', con=engine)
     X = df.message.values
     Y = df.drop(columns=['id', 'message', 'genre'], axis=1).values
@@ -76,10 +80,10 @@ def build_model():
     ])
 
     parameters = {
-        'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
+        # 'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
         # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
         # 'features__text_pipeline__vect__max_features': (None, 5000, 10000),
-        'features__text_pipeline__tfidf__use_idf': (True, False),
+        # 'features__text_pipeline__tfidf__use_idf': (True, False),
         'clf__estimator__n_estimators': [1]
         # 'clf__estimator__max_depth':[8],
         # 'clf__estimator__random_state':[42],
@@ -87,9 +91,9 @@ def build_model():
         # 'clf__estimator__max_features': ['auto'],
         # 'clf__estimator__min_samples_split': [2, 3, 4],
         # 'features__transformer_weights': (
-        #   {'text_pipeline': 1, 'starting_verb': 0.5},
-        #   {'text_pipeline': 0.5, 'starting_verb': 1},
-        #   {'text_pipeline': 0.8, 'starting_verb': 1},
+        #     {'text_pipeline': 1, 'starting_verb': 0.5},
+        #     {'text_pipeline': 0.5, 'starting_verb': 1}
+        #     {'text_pipeline': 0.8, 'starting_verb': 1},
         # )
     }
 
@@ -107,7 +111,10 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
-    pass
+    # Save file to the given path
+    pkl_filename = model_filepath + "pickle_model.pkl"
+    with open(pkl_filename, 'wb') as file:
+        pickle.dump(model, file)
 
 
 def main():
