@@ -1,13 +1,14 @@
 import sys
 import pandas as pd
 from sqlalchemy import create_engine
+from sqlalchemy.types import String, Unicode
 
 
 def load_data(messages_filepath, categories_filepath):
     # load messages dataset
-    messages = pd.read_csv(messages_filepath, dtype='str')
+    messages = pd.read_csv(messages_filepath, dtype='str', encoding='utf-8')
     # load categories dataset
-    categories = pd.read_csv(categories_filepath, dtype='str')
+    categories = pd.read_csv(categories_filepath, dtype='str', encoding='utf-8')
 
     return messages, categories
 
@@ -48,6 +49,12 @@ def clean_data(messages_df, categories_df):
     # drop the original categories column from `df`
     df.drop(columns=['categories'], inplace=True)
 
+    # reset index and drop
+    df = df.reset_index()
+    df.drop(columns=['index'], inplace=True)
+    categories_df = categories_df.reset_index()
+    categories_df.drop(columns=['index'], inplace=True)
+
     # concatenate the original dataframe with the new `categories` dataframe
     df = pd.concat([df, categories_df], axis=1)
 
@@ -55,7 +62,7 @@ def clean_data(messages_df, categories_df):
 
 
 def save_data(df, database_filepath):
-    df.head()
+    # print(df.dtypes)
     engine = create_engine('sqlite:///Disaster_Response.db')
     df.to_sql('Disaster_Response_Table', engine, index=False)
 
