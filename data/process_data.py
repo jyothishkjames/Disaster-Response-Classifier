@@ -1,10 +1,18 @@
 import sys
 import pandas as pd
 from sqlalchemy import create_engine
-from sqlalchemy.types import String, Unicode
 
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    Function to load the data from csv file into dataframe
+
+    INPUT:
+    messages_filepath - file path for csv file containing messages
+    categories_filepath - file path for csv file containing categories for the messages
+
+    """
+
     # load messages dataset
     messages = pd.read_csv(messages_filepath, dtype='str', encoding='utf-8')
     # load categories dataset
@@ -14,6 +22,15 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(messages_df, categories_df):
+    """
+    Function to clean the data
+
+    INPUT:
+    messages_df - dataframe containing messages
+    categories_df - dataframe containing categories for the messages
+
+    """
+
     # drop the column 'original'
     messages_df.drop(columns=['original'], axis=1, inplace=True)
 
@@ -62,8 +79,17 @@ def clean_data(messages_df, categories_df):
 
 
 def save_data(df, database_filepath):
+    """
+    Function to save the dataframe to a database
+
+    INPUT:
+    df - dataframe to be saved into database
+    database_filepath - file path to save the database
+
+    """
+
     # print(df.dtypes)
-    engine = create_engine('sqlite:///Disaster_Response.db')
+    engine = create_engine('sqlite:///' + database_filepath + 'Disaster_Response.db')
     df.to_sql('Disaster_Response_Table', engine, index=False)
 
 
