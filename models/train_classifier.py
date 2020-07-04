@@ -6,7 +6,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 import nltk
 
-nltk.download(['punkt', 'stopwords', 'averaged_perceptron_tagger'])
+nltk.download(['punkt', 'stopwords', 'averaged_perceptron_tagger', 'wordnet'])
 
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
@@ -21,6 +21,12 @@ import re
 
 
 class StartingVerbExtractor(BaseEstimator, TransformerMixin):
+    """
+    A class used to generate custom features. The custom feature
+    is a Starting Verb Extractor which return True if the stating
+    sentence is a Verb, returns False otherwise
+
+    """
     @staticmethod
     def starting_verb(text):
         sentence_list = nltk.sent_tokenize(text)
@@ -43,6 +49,14 @@ class StartingVerbExtractor(BaseEstimator, TransformerMixin):
 
 
 def load_data(database_filepath):
+    """
+    Function to load the data from database into dataframe
+
+    INPUT:
+    database_filepath - file path of the database
+
+    """
+
     # load data from database
     print(database_filepath)
     engine = create_engine('sqlite:///' + database_filepath)
@@ -54,6 +68,14 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    """
+    Function to tokenize the input text
+
+    INPUT:
+    text - text to be tokenized
+
+    """
+
     # normalize text
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     # tokenize text data
@@ -64,6 +86,11 @@ def tokenize(text):
 
 
 def build_model():
+    """
+    Function to build the machine learning pipeline
+
+    """
+
     # build machine learning pipeline
     pipeline = Pipeline([
         ('features', FeatureUnion([
@@ -80,21 +107,21 @@ def build_model():
     ])
 
     parameters = {
-        # 'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
-        # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
-        # 'features__text_pipeline__vect__max_features': (None, 5000, 10000),
-        # 'features__text_pipeline__tfidf__use_idf': (True, False),
-        'clf__estimator__n_estimators': [1]
+        'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
+        'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
+        'features__text_pipeline__vect__max_features': (None, 5000, 10000),
+        'features__text_pipeline__tfidf__use_idf': (True, False),
+        'clf__estimator__n_estimators': [10],
         # 'clf__estimator__max_depth':[8],
         # 'clf__estimator__random_state':[42],
         # 'clf__estimator__class_weight': ['balanced'],
         # 'clf__estimator__max_features': ['auto'],
         # 'clf__estimator__min_samples_split': [2, 3, 4],
-        # 'features__transformer_weights': (
-        #     {'text_pipeline': 1, 'starting_verb': 0.5},
-        #     {'text_pipeline': 0.5, 'starting_verb': 1}
-        #     {'text_pipeline': 0.8, 'starting_verb': 1},
-        # )
+        'features__transformer_weights': (
+            {'text_pipeline': 1, 'starting_verb': 0.5},
+            {'text_pipeline': 0.5, 'starting_verb': 1}
+            # {'text_pipeline': 0.8, 'starting_verb': 1},
+        )
     }
 
     cv = GridSearchCV(pipeline, param_grid=parameters)
@@ -102,7 +129,17 @@ def build_model():
     return cv
 
 
-def evaluate_model(model, X_test, Y_test, category_names):
+def evaluate_model(model, X_test, Y_test):
+    """
+    Function to evaluate the model
+
+    INPUT:
+    model - model to be evaluated
+    X_test - test features
+    Y_test - test labels
+
+    """
+
     # predict on test data
     Y_pred = model.predict(X_test)
     # Iterating through each column
@@ -111,6 +148,15 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    """
+    Function to save the model as a pickle file
+
+    INPUT:
+    model - model to be saved
+    model_filepath - file path to save the model
+
+    """
+
     # Save file to the given path
     pkl_filename = model_filepath + "pickle_model.pkl"
     with open(pkl_filename, 'wb') as file:
