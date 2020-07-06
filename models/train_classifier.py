@@ -124,7 +124,7 @@ def build_model():
         )
     }
 
-    cv = GridSearchCV(pipeline, param_grid=parameters)
+    cv = GridSearchCV(pipeline, param_grid=parameters, n_jobs=1)
 
     return cv
 
