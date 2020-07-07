@@ -29,10 +29,12 @@ def index():
     genre_names = list(genre_counts.index)
 
     # Plot distribution of message categories
-    label_count = []
+    true_label_count = []
     label_names = []
+    false_label_count = []
     for col in df.columns[3:]:
-        label_count.append(df[col][df[col] == 1].count())
+        true_label_count.append(df[col][df[col] == 1].count())
+        false_label_count.append(df[col][df[col] == 0].count())
         label_names.append(col)
 
     # create visuals
@@ -61,18 +63,39 @@ def index():
             'data': [
                 Bar(
                     x=label_names,
-                    y=label_count
+                    y=true_label_count
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Categories',
+                'title': 'Distribution of True Message Categories',
                 'yaxis': {
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Categories"
-                }
+                    'tickangle': -38
+                },
+                'height': 500
+            }
+        },
+
+        {
+            'data': [
+                Bar(
+                    x=label_names,
+                    y=false_label_count
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of False Message Categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'tickangle': -38
+                },
+                'height': 500
             }
         }
     ]
