@@ -24,11 +24,9 @@ model = joblib.load("../models/pickle_model.pkl")
 @app.route('/index')
 def index():
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
 
-    # Plot distribution of message categories
     true_label_count = []
     label_names = []
     false_label_count = []
@@ -38,7 +36,6 @@ def index():
         label_names.append(col)
 
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
@@ -113,8 +110,6 @@ def index():
 def go():
     # save user input in query
     query = request.args.get('query', '')
-
-    print(query)
 
     # use model to predict classification for query
     classification_labels = model.predict([query])[0]
