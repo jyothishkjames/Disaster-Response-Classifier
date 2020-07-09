@@ -20,7 +20,7 @@ The following libraries are used for the project:
 Extract Transform Load Pipeline
 -------------------------------
 
-To execute the ETL pipeline, go to the folder data and 
+To execute the ETL pipeline, go to the folder **data** and 
 follow the below command.
 
     python process_data.py disaster_messages.csv disaster_categories.csv DisasterResponse.db
@@ -29,7 +29,7 @@ follow the below command.
 Machine learning Pipeline
 -------------------------
 
-To execute the Machine learning pipeline, go to the folder models
+To execute the Machine learning pipeline, go to the folder **models**
 and follow the below command. 
 
     python train_classifier.py ../data/DisasterResponse.db classifier.pkl
@@ -37,7 +37,7 @@ and follow the below command.
 Running the Server
 ------------------
 
-Go to the folder app/ and run the file run.py
+Go to the folder **app** and run the file run.py
 
 	python run.py
 
