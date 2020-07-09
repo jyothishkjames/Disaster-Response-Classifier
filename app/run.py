@@ -51,7 +51,7 @@ def index():
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Message Category"
+                    'title': "Message Genre"
                 }
             }
         },
