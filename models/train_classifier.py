@@ -11,7 +11,7 @@ nltk.download(['punkt', 'stopwords', 'averaged_perceptron_tagger', 'wordnet'])
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -111,9 +111,9 @@ def build_model():
         'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
         'features__text_pipeline__vect__max_features': (None, 5000, 10000),
         'features__text_pipeline__tfidf__use_idf': (True, False),
-        'clf__estimator__n_estimators': [10],
-        'clf__estimator__max_depth':[8],
-        'clf__estimator__random_state':[42],
+        'clf__estimator__n_estimators': [1],
+        'clf__estimator__max_depth': [8],
+        'clf__estimator__random_state': [42],
         'clf__estimator__class_weight': ['balanced'],
         'clf__estimator__max_features': ['auto'],
         'clf__estimator__min_samples_split': [2, 3, 4],
@@ -124,7 +124,7 @@ def build_model():
         )
     }
 
-    cv = GridSearchCV(pipeline, param_grid=parameters, n_jobs=1)
+    cv = GridSearchCV(pipeline, param_grid=parameters, n_jobs=1, verbose=1)
 
     return cv
 
@@ -158,7 +158,7 @@ def save_model(model, model_filepath):
     """
 
     # Save file to the given path
-    pkl_filename = model_filepath + "pickle_model.pkl"
+    pkl_filename = model_filepath
     with open(pkl_filename, 'wb') as file:
         pickle.dump(model, file)
 
@@ -177,7 +177,7 @@ def main():
         model.fit(X_train, Y_train)
 
         print('Evaluating model...')
-        evaluate_model(model, X_test, Y_test, category_names)
+        # evaluate_model(model, X_test, Y_test)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)
