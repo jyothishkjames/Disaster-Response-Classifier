@@ -1,6 +1,7 @@
 import json
 import sys
 import plotly
+
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
