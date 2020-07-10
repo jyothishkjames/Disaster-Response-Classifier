@@ -12,7 +12,7 @@ from models.train_classifier import *
 app = Flask(__name__)
 
 # load data
-engine = create_engine('sqlite:///../data/Disaster_Response.db')
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('Disaster_Response_Table', engine)
 
 # load model
