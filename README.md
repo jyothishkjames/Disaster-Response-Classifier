@@ -49,10 +49,6 @@ The classification report for the multiclass classifier can be obtained
 by running the machine learning pipeline.
 
 
-Github link
------------
-
-https://github.com/jyothishkjames/Disaster-Response-Classifier
     
 
     
